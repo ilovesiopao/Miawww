@@ -1,0 +1,247 @@
+<html>
+<head>
+  <title>Hehe=￣ω￣=</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .image-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      overflow: hidden;
+      z-index: 1;
+    }
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .overlay-text {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: pink;
+      color: red;
+      font-size: 32px;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+    #randomBtn, #changeBtn, #extraBtn, #nextPageBtn {
+      position: absolute;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 2;
+    }
+    #randomBtn {
+      top: 20px;
+      left: 20px;
+    }
+    #changeBtn {
+      top: 20px;
+      right: 20px;
+    }
+    #extraBtn {
+      display: none;
+      top: 60%;
+      left: 50%;
+      transform: translateX(120%);
+    }
+    #clickCounter {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      color: red;
+      font-weight: bold;
+    }
+    #nextPageBtn {
+      display: none;
+      top: 70%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: pink;
+      color: red;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: gold;
+      animation: pop 1.2s ease-out forwards;
+      z-index: 3;
+    }
+    @keyframes pop {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) rotate(720deg) scale(0.5);
+      }
+    }
+
+    /* Hearts */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      color: hotpink;
+      animation: floatUp 1.2s ease-out forwards;
+      z-index: 3;
+    }
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop id="bg-video">
+    <source src="Heartsss.mp4" type="video/mp4">
+  </video>
+
+  <div class="image-container">
+    <img id="mainImage" src="https://i.pinimg.com/736x/4a/10/50/4a10507bf058a0df0a8fbd70e9107364.jpg" alt="Center Photo">
+    <div id="overlayText" class="overlay-text">Do you love me?</div>
+  </div>
+
+  <button id="randomBtn">YES</button>
+  <button id="changeBtn">NO</button>
+  <button id="extraBtn">
+    <span id="clickCounter">0</span>
+    Mwa😽
+  </button>
+  <button id="nextPageBtn">Wanna go to history?</button>
+
+  <script>
+    const btn = document.getElementById("randomBtn");
+    const changeBtn = document.getElementById("changeBtn");
+    const extraBtn = document.getElementById("extraBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+    const mainImage = document.getElementById("mainImage");
+    const overlayText = document.getElementById("overlayText");
+    const clickCounter = document.getElementById("clickCounter");
+
+    const images = [
+      "https://i.pinimg.com/736x/23/34/af/2334aff129a07613c9b8a84d252a62f9.jpg",
+      "https://i.pinimg.com/736x/6f/1c/87/6f1c8794d99eb8a85a4f4c472b10af48.jpg"
+    ];
+    const texts = [
+      "Kisses to make me happi",
+      "I happi now ❤️"
+    ];
+
+    let currentIndex = 0;
+    let surpriseClicks = 0;
+
+    btn.addEventListener("click", () => {
+      const maxX = window.innerWidth - btn.offsetWidth;
+      const maxY = window.innerHeight - btn.offsetHeight;
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+      btn.style.left = randomX + "px";
+      btn.style.top = randomY + "px";
+    });
+
+    changeBtn.addEventListener("click", () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      mainImage.src = images[currentIndex];
+      overlayText.textContent = texts[currentIndex];
+      extraBtn.style.display = "block";
+      surpriseClicks = 0;
+      clickCounter.textContent = "0";
+      nextPageBtn.style.display = "none";
+    });
+
+    extraBtn.addEventListener("click", (e) => {
+      surpriseClicks++;
+      clickCounter.textContent = surpriseClicks;
+
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💖";
+      heart.style.left = (e.clientX - 10) + "px";
+      heart.style.top = (e.clientY - 10) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1200);
+
+      if (surpriseClicks === 10) {
+        currentIndex = (currentIndex + 1) % images.length;
+        mainImage.src = images[currentIndex];
+        overlayText.textContent = texts[currentIndex];
+        launchConfetti();
+        nextPageBtn.style.display = "block";
+      }
+    });
+
+    nextPageBtn.addEventListener("click", () => {
+      window.location.href = "nextpage.html"; // Change this to your actual next page
+    });
+
+    function launchConfetti() {
+      const totalPieces = 200;
+      for (let i = 0; i < totalPieces; i++) {
+        const piece = document.createElement("div");
+        const isHeart = Math.random() < 0.3;
+
+        if (isHeart) {
+          piece.classList.add("heart");
+          piece.textContent = "💖";
+          piece.style.fontSize = Math.random() * 20 + 20 + "px";
+        } else {
+          piece.classList.add("confetti");
+          piece.style.width = Math.random() * 8 + 4 + "px";
+          piece.style.height = piece.style.width;
+          piece.style.backgroundColor = getRandomColor();
+        }
+
+        piece.style.left = Math.random() * window.innerWidth + "px";
+        piece.style.top = Math.random() * window.innerHeight + "px";
+        piece.style.animation = "pop " + (Math.random() * 1 + 0.5) + "s ease-out forwards";
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 1500);
+      }
+    }
+
+    function getRandomColor() {
+      const colors = ["#ff0", "#f0f", "#0ff", "#f90", "#0f0", "#00f"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+  </script>
+</body>
+</html>
