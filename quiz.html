@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>(～￣▽￣)～</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #000;
+      overflow: hidden;
+    }
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .quiz-box {
+      position: relative;
+      background-color: rgba(255, 240, 245, 0.9);
+      border: 2px solid pink;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      margin: 100px auto;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+    h2 {
+      color: #ff3399;
+      margin-bottom: 30px;
+    }
+    .answer-btn {
+      display: block;
+      margin: 10px auto;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: pink;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 80%;
+      max-width: 300px;
+    }
+    #result {
+      font-size: 24px;
+      color: #cc0066;
+      margin-top: 30px;
+      font-weight: bold;
+    }
+    #reaction-video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80vw;
+      max-height: 80vh;
+      z-index: 2;
+      display: none;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 0, 150, 0.5);
+    }
+    #reaction-text {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      font-weight: bold;
+      color: hotpink;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      border-radius: 12px;
+      z-index: 3;
+      display: none;
+      text-align: center;
+    }
+    #countdown {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      color: white;
+      background-color: rgba(0,0,0,0.6);
+      padding: 8px 16px;
+      border-radius: 8px;
+      z-index: 3;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <video autoplay muted loop id="bg-video">
+    <source src="Stars.mp4" type="video/mp4">
+  </video>
+
+  <video id="reaction-video" muted loop></video>
+  <div id="reaction-text"></div>
+  <div id="countdown"></div>
+
+  <div class="quiz-box">
+    <h2 id="question">Loading question...</h2>
+    <button class="answer-btn" onclick="checkAnswer(0)">Option A</button>
+    <button class="answer-btn" onclick="checkAnswer(1)">Option B</button>
+    <button class="answer-btn" onclick="checkAnswer(2)">Option C</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { text: "What's my favorite color???", options: ["Red n Black", "Pink", "White"], correct: 0 },
+      { text: "What's my favorite inside joke abt u?", options: ["Meet up tayo sa complex.", "So itututok molang...", "Wag kang malunod"], correct: 0 },
+      { text: "Do I like cats?", options: ["EW", "YES", "I LOVE THEM"], correct: 2 },
+      { text: "When's my bday?", options: ["Nov 5, 2025", "May 10, 2012", "None of the above"], correct: 2 },
+      { text: "What comforts me:P", options: ["KISSESSS", "CUDDLES", "Depende sa mood niya😭"], correct: 2 },
+      { text: "If a girl runs up to u n kisses you, what WILL u do?", options: ["SEIO-NAGE", "Say I'm taken and i love my bebi", "Tell Kai right away"], correct: 1 },
+      { text: "Can you go to other girls if we have a fight seeking comfort from them?", options: ["No or else my cat will kill me", "Yes, kasi hindi magseselos bebe ko", "No, go to your ex instead"], correct: 0 },
+      { text: "Kung nagseselos bebi mo, what WILL u do?", options: ["BLOCK YUNG PINAGSESELOSAN NIYA", "Reassure her:(", "Hayaan mona😽"], correct: 1 },
+      { text: "Whats my fav type of milk🥛", options: ["YOURS(IM JOKING😭)", "Whole Milk", "Almond milk"], correct: 2 },
+      { text: "Will you promise to love me forever:<", options: ["KADIRI EW NO", "Opo bebi:P", "BREAK NA TAYO NAYON😡"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question").textContent = q.text;
+      const buttons = document.querySelectorAll(".answer-btn");
+      buttons.forEach((btn, i) => {
+        btn.textContent = q.options[i];
+      });
+    }
+
+    function checkAnswer(selected) {
+      const q = questions[currentQuestion];
+      const isCorrect = selected === q.correct;
+      if (isCorrect) score++;
+
+      const correctText = q.options[q.correct];
+      playReaction(
+        isCorrect ? "kiss.mp4" : "hehehuhu.mp4",
+        isCorrect ? "Awh ilysm" : "Better thinkin' next time",
+        isCorrect ? "" : correctText
+      );
+
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        setTimeout(loadQuestion, 7000);
+      } else {
+        setTimeout(showReview, 7000);
+      }
+    }
+
+    function playReaction(src, message, correctAnswer = "") {
+      const video = document.getElementById("reaction-video");
+      const text = document.getElementById("reaction-text");
+      const countdown = document.getElementById("countdown");
+
+      video.src = src;
+      video.style.display = "block";
+      video.play();
+
+      text.innerHTML = message;
+      if (correctAnswer) {
+        text.innerHTML += `<br><span style="font-size:20px; color:#cc0066;">Correct answer: ${correctAnswer}</span>`;
+      }
+      text.style.display = "block";
+
+      let timeLeft = 7;
+      countdown.textContent = `⏳ ${timeLeft}s`;
+      countdown.style.display = "block";
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        countdown.textContent = `⏳ ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          video.pause();
+          video.style.display = "none";
+          text.style.display = "none";
+          countdown.style.display = "none";
+        }
+      }, 1000);
+    }
+
+    function showReview() {
+      document.querySelector(".quiz-box").innerHTML = `
+        <h2>Alr you did it I guess-_-</h2>
+        <div id="result">You got ${score} out of ${questions.length} bruh</div>
+      `;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
