@@ -98,6 +98,14 @@
 </head>
 <body>
 
+  <div id="cat-warning-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.95);z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+    <div style="font-size:2.5rem;font-weight:bold;color:hotpink;text-align:center;margin-bottom:32px;max-width:90vw;">
+      If videos of cats dont pop up when you answer, kindly refresh the page.
+    </div>
+    <div id="cat-timer" style="font-size:2rem;color:#cc0066;margin-bottom:18px;">⏳ 10s</div>
+    <div style="font-size:1.3rem;color:#ff3399;margin-bottom:24px;">When timer ends, this message will dissapear.</div>
+    <button id="refresh-btn" style="font-size:2rem;padding:18px 48px;background:pink;color:white;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.1);font-family:'Comic Sans MS',cursive;">REFRESH</button>
+  </div>
   <video autoplay muted loop id="bg-video">
     <source src="Stars.mp4" type="video/mp4">
   </video>
@@ -199,6 +207,25 @@
       `;
     }
 
+    // Overlay logic
+    window.addEventListener('DOMContentLoaded', function() {
+      const overlay = document.getElementById('cat-warning-overlay');
+      const btn = document.getElementById('refresh-btn');
+      const timerText = document.getElementById('cat-timer');
+      let timeLeft = 10;
+      timerText.textContent = `⏳ ${timeLeft}s`;
+      const timer = setInterval(() => {
+        timeLeft--;
+        timerText.textContent = `⏳ ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          overlay.style.display = 'none';
+        }
+      }, 1000);
+      btn.onclick = function() {
+        location.reload();
+      };
+    });
     loadQuestion();
   </script>
 </body>
